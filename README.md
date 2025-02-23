@@ -63,73 +63,87 @@ The application is hosted at https://david-p-sorensen.shinyapps.io/location-quot
 I originally wanted to webscrape the job postings from a job board myself, however I quickly learned the difficulties and potential legal issues with this, so I reluctantly used a dataset somebody else curated from [kaggle](https://www.kaggle.com/datasets/arshkon/linkedin-job-postings/data). This dataset contains data on over 124,000 job postings and spans from 2023 to 2024.
 
 ### API Implementation
-- OpenAI API (GPT-3.5 Turbo) for classification
-- Process for collecting and storing responses
+The project leverages the OpenAI API (GPT-3.5 Turbo) to classify job postings into standardized industry categories and ownership types. Each job posting's description and title were processed to categorize it into:
+
+- 13 major industry sectors aligned with BLS classifications
+- 4 ownership categories (federal, state, local, and private)
 
 ## Data Processing & Cleaning
 ### Classification Methodology
-- Industry classification approach
-- Government ownership classification (federal, state, local, private)
-- Handling edge cases
+The classification process involved two main components:
+
+1. **Industry Classification**
+   - Jobs were categorized into 13 major sectors including Manufacturing, Construction, Information, etc.
+   - Used GPT-3.5 Turbo to analyze job descriptions and titles
+   - Aligned classifications with standard BLS industry categories
+
+2. **Ownership Classification**
+   - Each job was categorized as federal, state, local, or private sector
+   - Classification based on employer information and job descriptions
+   - Multiple validation passes to ensure accuracy
 
 ### Data Transformation
-- Aggregation methods
-- Calculation of employment metrics
-- State-level consolidation
+The raw job posting data was transformed through several steps:
 
-## Data Analysis
-### Location Quotient Calculation
-[Explain the LQ formula and its significance]
-
-### Methodology
-- State-level aggregation process
-- Industry concentration calculations
-- Statistical considerations
-
-### Key Findings
-[Any interesting patterns or insights discovered]
+1. State-level aggregation of job counts by industry and ownership
+2. Calculation of employment concentrations:
+   - Local concentration ratios for each state
+   - National concentration benchmarks
+   - Location quotient computations
+3. Data validation and outlier detection
 
 ## Data Visualization
 ### Technical Implementation
-- R Shiny framework
-- Plotly for mapping
-- Interactive features
+The visualization is built using:
+- R Shiny for the web application framework
+- Plotly for interactive choropleth mapping
+- Custom CSS for styling and layout
+- Dynamic tooltips for detailed state metrics
 
 ### Design Decisions
-- Color scheme selection
-- UI/UX considerations
-- Interactive elements
+- Implemented a blue-to-orange color gradient matching BLS conventions
+- Created an intuitive dropdown for industry selection
+- Added interactive hover effects showing detailed state metrics
+- Included industry-specific thresholds for color scaling
 
 ## Deployment
 ### Technology Stack
-- R Shiny
-- Additional libraries/dependencies
+The application uses the following key components:
+```r
+library(shiny)
+library(plotly)
+library(dplyr)
+library(readxl)
+```
 
 ### Hosting
-- Deployment platform (shinyapps.io)
-- Configuration details
+- Deployed on shinyapps.io free tier
+- Configured for optimal performance within platform constraints
+- Handles multiple concurrent users
 
 ## Limitations & Future Work
 ### Current Limitations
-- Data coverage
-- Processing constraints
-- [Other limitations]
+- LinkedIn data may not perfectly represent all industry employment
+- Limited to 13 major industry sectors
+- Some states have sparse data in certain industries
+- Free tier hosting limits on shinyapps.io (25 active hours/month)
 
 ### Future Improvements
-- Additional features
-- Potential enhancements
-- [Future work ideas]
+- Expand to more granular industry classifications
+- Add time-series analysis capabilities
+- Implement ownership type filtering
+- Add comparative analysis tools
+- Enhance mobile responsiveness
 
 ## Technical Details
-### Dependencies
-```r
-[List of required R packages]
-```
-
 ### Local Setup
 1. Clone the repository
-2. Install required packages
-3. [Additional setup steps]
-
-### Usage Instructions
-[How to use the application, including any filtering or interactive features]
+2. Install required R packages:
+```r
+install.packages(c("shiny", "plotly", "dplyr", "readxl"))
+```
+3. Set up your openai API key if rerunning classifications
+4. Run the Shiny application:
+```r
+shiny::runApp()
+```
