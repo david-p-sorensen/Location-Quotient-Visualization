@@ -41,15 +41,26 @@ Through this normalized comparison, location quotients provide a standardized wa
 3. Track changes in regional industrial composition over time
 4. Understand relative strengths and weaknesses in regional economies
 ### Motivation
-[Explain why you chose this project and what problem it solves]
 
+This project reimagines the Bureau of Labor Statistics' [Location Quotient Visualization](https://data.bls.gov/maps/cew/US), which maps industry concentration across all 50 states. While the BLS collects their data through comprehensive employer surveys and administrative records, this project takes an alternative approach by using LinkedIn job postings as a proxy for industry employment.
+
+The core hypothesis is that the distribution of job postings on LinkedIn can serve as an indicator of industry employment patterns across different regions. This methodology introduces some interesting statistical properties:
+
+1. **Industry Platform Bias**: Different industries may have varying levels of presence on LinkedIn
+   - However, since location quotients compare local-to-national ratios, any industry-level bias in LinkedIn usage is normalized out of the final calculation
+   - For example, if tech companies post 80% of their jobs on LinkedIn while manufacturing posts only 20%, this bias affects all states equally and doesn't impact the relative concentrations
+
+2. **Geographic Platform Bias**: Different states may have varying levels of LinkedIn adoption
+   - Similarly, since each state's industry concentration is normalized by its total job postings, state-level variations in LinkedIn usage don't affect the final location quotients
+   - If California posts 50% of all jobs on LinkedIn while Montana posts only 10%, this bias is eliminated when calculating the proportion of jobs within each state
+
+This approach demonstrates how alternative data sources can be used to approximate traditional economic metrics, while maintaining statistical validity through the self-normalizing properties of location quotients.
 ### Live Application
-The application is hosted at [insert URL]. This visualization allows users to explore industry concentration across different states using an interactive map interface.
+The application is hosted at https://david-p-sorensen.shinyapps.io/location-quotient-visualization Mirroring the functionality of the BLS Location Quotient Mapper, this interactive visualization displays industry concentration heat maps across U.S. Users can select from 13 major industry sectors and observe how employment is distributed geographically through an intuitive color-coded interface. Hovering over states reveals detailed metrics including local and national concentration ratios, total employment figures, and precise location quotient calculations.
 
 ## Data Collection
 ### Data Sources
-- LinkedIn job postings data
-- [Any other data sources]
+I originally wanted to webscrape the job postings from a job board myself, however I quickly learned the difficulties and potential legal issues with this, so I reluctantly used a dataset somebody else curated from [kaggle](https://www.kaggle.com/datasets/arshkon/linkedin-job-postings/data). This dataset contains data on over 124,000 job postings and spans from 2023 to 2024.
 
 ### API Implementation
 - OpenAI API (GPT-3.5 Turbo) for classification
