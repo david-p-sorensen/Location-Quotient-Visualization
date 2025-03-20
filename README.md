@@ -44,53 +44,55 @@ Through this normalized comparison, location quotients provide a standardized wa
 
 This project reimagines the Bureau of Labor Statistics' [Location Quotient Visualization](https://data.bls.gov/maps/cew/US), which maps industry concentration across all 50 states. While the BLS collects their data through comprehensive employer surveys and administrative records, this project takes an alternative approach by using LinkedIn job postings as a proxy for industry employment.
 
-The core hypothesis is that the distribution of job postings on LinkedIn can serve as an indicator of industry employment patterns across different regions. This methodology introduces some interesting statistical properties:
+The core hypothesis is that job postings on LinkedIn can indicate industry employment patterns across regions. This approach has key statistical advantages:
 
-1. **Industry Platform Bias**: Different industries may have varying levels of presence on LinkedIn
-   - However, since location quotients compare local-to-national ratios, any industry-level bias in LinkedIn usage is normalized out of the final calculation
-   - For example, if tech companies post 80% of their jobs on LinkedIn while manufacturing posts only 20%, this bias affects all states equally and doesn't impact the relative concentrations
+1. **Industry Platform Bias**: Different industries use LinkedIn at different rates
+   - Location quotients compare local-to-national ratios, which automatically cancels out any industry-specific LinkedIn usage bias
+   - For example, even if tech companies post 80% of their jobs on LinkedIn while manufacturing posts only 20%, this affects all states equally and doesn't distort relative concentrations
 
-2. **Geographic Platform Bias**: Different states may have varying levels of LinkedIn adoption
-   - Similarly, since each state's industry concentration is normalized by its total job postings, state-level variations in LinkedIn usage don't affect the final location quotients
-   - If California posts 50% of all jobs on LinkedIn while Montana posts only 10%, this bias is eliminated when calculating the proportion of jobs within each state
+2. **Geographic Platform Bias**: LinkedIn adoption varies by state
+   - Each state's industry concentration is normalized by its total job postings, eliminating state-level variations in LinkedIn usage
+   - For example, if California posts 50% of all jobs on LinkedIn while Montana posts only 10%, this difference disappears when calculating the proportion of jobs within each state
 
-This approach demonstrates how alternative data sources can be used to approximate traditional economic metrics, while maintaining statistical validity through the self-normalizing properties of location quotients.
+This method shows how alternative data sources can effectively approximate traditional economic metrics while maintaining statistical validity through location quotients' self-normalizing properties.
 ### Live Application
-The application is hosted at https://david-p-sorensen.shinyapps.io/location-quotient-visualization Mirroring the functionality of the BLS Location Quotient Mapper, this interactive visualization displays industry concentration heat maps across U.S. Users can select from 13 major industry sectors and observe how employment is distributed geographically through an intuitive color-coded interface. Hovering over states reveals detailed metrics including local and national concentration ratios, total employment figures, and precise location quotient calculations.
+The application is hosted at https://david-p-sorensen.shinyapps.io/location-quotient-visualization Mirroring the functionality of the BLS Location Quotient Mapper, this interactive visualization displays industry concentration heat maps across U.S. Users can select from 11 major industry sectors and observe how employment is distributed geographically through an intuitive color-coded interface. Hovering over states reveals detailed metrics including local and national concentration ratios, total employment figures, and precise location quotient calculations.
 
-## Data Collection
-### Data Sources
+## Data Acquisition & Preprocessing
+### Data Collection
 I originally wanted to webscrape the job postings from a job board myself, however I quickly learned the difficulties and potential legal issues with this, so I reluctantly used a dataset somebody else curated from [kaggle](https://www.kaggle.com/datasets/arshkon/linkedin-job-postings/data). This dataset contains data on over 124,000 job postings and spans from 2023 to 2024.
 
-### API Implementation
-The project leverages the OpenAI API (GPT-3.5 Turbo) to classify job postings into standardized industry categories and ownership types. Each job posting's description and title were processed to categorize it into:
+### Data Processing & Classification
+The project uses OpenAI's GPT-3.5 Turbo to classify LinkedIn job postings by industry and ownership. I based classifications solely on job titles and company names after filtering out:
 
-- 13 major industry sectors aligned with BLS classifications
-- 4 ownership categories (federal, state, local, and private)
+- Remote jobs
+- Jobs with only "United States" as location
+- Jobs located in D.C. and other non-state areas
+- "Public Administration" industry jobs (to match BLS visualization)
 
-## Data Processing & Cleaning
-### Classification Methodology
-The classification process involved two main components:
+The classification process categorized each posting into:
 
-1. **Industry Classification**
-   - Jobs were categorized into 13 major sectors including Manufacturing, Construction, Information, etc.
-   - Used GPT-3.5 Turbo to analyze job descriptions and titles
-   - Aligned classifications with standard BLS industry categories
+- 11 major industry sectors aligned with BLS classifications
+- 4 ownership types: federal, state, local, and private
 
-2. **Ownership Classification**
-   - Each job was categorized as federal, state, local, or private sector
-   - Classification based on employer information and job descriptions
-   - Multiple validation passes to ensure accuracy
+This approach allows for standardized comparison with official BLS data while accommodating the limitations of LinkedIn job posting information.
 
 ### Data Transformation
-The raw job posting data was transformed through several steps:
+The raw job posting data underwent several transformation steps:
 
-1. State-level aggregation of job counts by industry and ownership
-2. Calculation of employment concentrations:
-   - Local concentration ratios for each state
-   - National concentration benchmarks
-   - Location quotient computations
-3. Data validation and outlier detection
+1. **Job Location Assignment:**
+    - Used provided FIPS codes to assign jobs to their respective states
+    - For jobs with missing FIPS codes, employed GPT-3.5 Turbo to determine state location
+    - Manually assigned remaining unclassified locations using Excel filtering
+
+2. **State-level Aggregation:**
+    - Compiled job counts by industry and ownership type for each state
+3. **Concentration Calculations:**
+    - Computed local concentration ratios within each state
+    - Established national concentration benchmarks
+    - Calculated location quotients to compare state vs. national distributions
+  
+This process ensured accurate geographic representation of all job postings before performing comparative analysis.
 
 ## Data Visualization
 ### Technical Implementation
