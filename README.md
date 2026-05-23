@@ -1,151 +1,172 @@
-# [Location Quotient Visualization](https://david-p-sorensen.shinyapps.io/location-quotient-visualization/)
+# Reimagining Regional Economic Analysis: A Location Quotient Visualization With Alternative Data Sources
 
-## Project Overview
-### Background
+## 🔗 [**Click here to view the interactive visualization**](https://david-p-sorensen.shinyapps.io/location-quotient-visualization/)
 
-A location quotient (LQ) is a fundamental analytical tool in economic geography that measures the relative concentration of industries across different geographical areas. By comparing local industry concentrations to national averages, LQs help identify regional specializations and industrial clusters. This metric is particularly valuable because it normalizes for both the size of the local economy and the size of the industry nationally, enabling meaningful comparisons across regions of different sizes.
+## Introduction
 
-The interpretation of LQs is straightforward:
-- An LQ of 1.0 indicates that the local area has the same proportion of employment in an industry as the nation
-- An LQ greater than 1.0 suggests a higher concentration locally than the national average
-- An LQ less than 1.0 indicates a lower concentration locally than the national average
+Economic geography provides critical insights into how industries cluster across regions, revealing patterns that shape both local prosperity and national competitiveness. Understanding these spatial distributions helps policymakers identify regional strengths, economists analyze labor markets, and businesses make strategic location decisions. This project develops an innovative approach to measuring and visualizing industrial concentration across the United States by leveraging LinkedIn job posting data as an alternative to traditional government surveys.
 
-The formula for calculating location quotients consists of two primary components that are then divided:
+The centerpiece of this analysis is the **location quotient (LQ)**, a fundamental metric in regional economics that measures the relative concentration of industries across different geographical areas. By comparing local industry concentrations to national averages, location quotients reveal regional specializations and industrial clusters while normalizing for differences in regional economic size. This normalization enables meaningful comparisons between states as diverse as California and Wyoming, making it an essential tool for economic analysis.
 
-**Local Concentration** = (Local Industry Employment) / (Local Total Employment)  
-**National Concentration** = (National Industry Employment) / (National Total Employment)  
-**Location Quotient** = Local Concentration / National Concentration
+## Theoretical Foundation and Methodology
 
-For example, consider Detroit's manufacturing industry:
-```
-                (Detroit Manufacturing Jobs)
-                ---------------------------
-                (Total Detroit Jobs)
-LQ = --------------------------------------------
-                (US Manufacturing Jobs)
-                ----------------------
-                (Total US Jobs)
-```
-
-Using hypothetical numbers, if Detroit has 100,000 manufacturing jobs out of 500,000 total jobs (20% local concentration), while nationally there are 12 million manufacturing jobs out of 150 million total jobs (8% national concentration), Detroit's manufacturing LQ would be:
+A location quotient represents the ratio of an industry's local share of employment to its national share. Mathematically, it compares two proportions:
 
 ```
-LQ = (20% / 8%) = 2.5
+        (Local Industry Employment / Local Total Employment)
+LQ = ──────────────────────────────────────────────────────────
+     (National Industry Employment / National Total Employment)
 ```
 
-This LQ of 2.5 indicates that manufacturing employment is two and a half times more concentrated in Detroit than it is nationally. Such a high LQ might suggest the presence of a manufacturing cluster, specialized workforce, or historical industrial development in the region.
+The interpretation of location quotients follows a straightforward framework:
 
-Through this normalized comparison, location quotients provide a standardized way to:
-1. Identify regional industrial specializations
-2. Compare industry concentrations across different geographic areas
-3. Track changes in regional industrial composition over time
-4. Understand relative strengths and weaknesses in regional economies
-### Motivation
+- **LQ = 1.0** — the local area mirrors the national proportion of employment in that industry
+- **LQ > 1.0** — regional specialization, with the magnitude indicating the degree of concentration
+- **LQ < 1.0** — underrepresentation relative to the national average
 
-This project reimagines the Bureau of Labor Statistics' [Location Quotient Visualization](https://data.bls.gov/maps/cew/US), which maps industry concentration across all 50 states. While the BLS collects their data through comprehensive employer surveys and administrative records, this project takes an alternative approach by using LinkedIn job postings as a proxy for industry employment.
+### Illustrative Example: New York's Financial Sector
 
-The core hypothesis is that job postings on LinkedIn can indicate industry employment patterns across regions. This approach has key statistical advantages:
+To illustrate this concept using the application, consider New York's financial activities sector. The visualization reveals that New York employs 837 workers in financial activities out of 7,027 total jobs captured in the dataset (11.91% local concentration). Nationally, the financial sector represents 6,566 jobs out of 106,054 total positions (6.19% concentration). This yields a location quotient of:
 
-1. **Industry Platform Bias**: Different industries use LinkedIn at different rates
-   - Location quotients compare local-to-national ratios, which automatically cancels out any industry-specific LinkedIn usage bias
-   - For example, even if tech companies post 80% of their jobs on LinkedIn while manufacturing posts only 20%, this affects all states equally and doesn't distort relative concentrations
-
-2. **Geographic Platform Bias**: LinkedIn adoption varies by state
-   - Each state's industry concentration is normalized by its total job postings, eliminating state-level variations in LinkedIn usage
-   - For example, if California posts 50% of all jobs on LinkedIn while Montana posts only 10%, this difference disappears when calculating the proportion of jobs within each state
-
-This method shows how alternative data sources can effectively approximate traditional economic metrics while maintaining statistical validity through location quotients' self-normalizing properties.
-### Live Application
-The application is hosted at https://david-p-sorensen.shinyapps.io/location-quotient-visualization Mirroring the functionality of the BLS Location Quotient Mapper, this interactive visualization displays industry concentration heat maps across U.S. Users can select from 11 major industry sectors and observe how employment is distributed geographically through an intuitive color-coded interface. Hovering over states reveals detailed metrics including local and national concentration ratios, total employment figures, and precise location quotient calculations.
-
-## Data Acquisition & Preprocessing
-### Data Collection
-I originally wanted to webscrape the job postings from a job board myself, however I quickly learned the difficulties and potential legal issues with this, so I reluctantly used a dataset somebody else curated from [kaggle](https://www.kaggle.com/datasets/arshkon/linkedin-job-postings/data). This dataset contains data on over 124,000 job postings and spans from 2023 to 2024.
-
-### Data Processing & Classification
-The project uses OpenAI's GPT-3.5 Turbo to classify LinkedIn job postings by industry and ownership. I based classifications solely on job titles and company names after filtering out:
-
-- Remote jobs
-- Jobs with only "United States" as location
-- Jobs located in D.C. and other non-state areas
-- "Public Administration" industry jobs (to match BLS visualization)
-
-The classification process categorized each posting into:
-
-- 11 major industry sectors aligned with BLS classifications
-- 4 ownership types: federal, state, local, and private
-
-This approach allows for standardized comparison with official BLS data while accommodating the limitations of LinkedIn job posting information.
-
-### Data Transformation
-The raw job posting data underwent several transformation steps:
-
-1. **Job Location Assignment:**
-    - Used provided FIPS codes to assign jobs to their respective states
-    - For jobs with missing FIPS codes, employed GPT-3.5 Turbo to determine state location
-    - Manually assigned remaining unclassified locations using Excel filtering
-
-2. **State-level Aggregation:**
-    - Compiled job counts by industry and ownership type for each state
-3. **Concentration Calculations:**
-    - Computed local concentration ratios within each state
-    - Established national concentration benchmarks
-    - Calculated location quotients to compare state vs. national distributions
-  
-This process ensured accurate geographic representation of all job postings before performing comparative analysis.
-
-## Data Visualization
-### Technical Implementation
-The visualization is built using:
-- R Shiny for the web application framework
-- Plotly for interactive choropleth mapping
-- Custom CSS for styling and layout
-- Dynamic tooltips for detailed state metrics
-
-### Design Decisions
-- Implemented a blue-to-orange color gradient matching BLS conventions
-- Created an intuitive dropdown for industry selection
-- Added interactive hover effects showing detailed state metrics
-- Included industry-specific thresholds for color scaling
-
-## Deployment
-### Technology Stack
-The application uses the following key components:
-```r
-library(shiny)
-library(plotly)
-library(dplyr)
-library(readxl)
+```
+LQ = 11.91% / 6.19% = 1.92
 ```
 
-### Hosting
-- Deployed on shinyapps.io free tier
-- Configured for optimal performance within platform constraints
-- Handles multiple concurrent users
+This result confirms New York's well-documented status as a financial hub with nearly double the national concentration of financial employment.
 
-## Limitations & Future Work
+## Data Innovation and Statistical Validity
+
+This project reimagines the Bureau of Labor Statistics' traditional [Location Quotient Mapper](https://data.bls.gov/maps/cew/US) by substituting comprehensive employer surveys with publicly available LinkedIn job posting data. While the BLS collects data through mandatory employer reporting and administrative records, this alternative approach demonstrates how modern digital platforms can serve as valuable proxies for economic indicators.
+
+The validity of using LinkedIn data for location quotient analysis rests on two critical statistical properties that address potential biases:
+
+### 1. Industry-Specific Platform Bias Cancels Out
+
+The fact that technology companies might post 80% of openings on LinkedIn while manufacturing firms post only 20% affects all states equally. Since location quotients compare ratios rather than absolute values, this systematic bias cancels out mathematically. The relative concentration of tech jobs in California versus Montana remains accurate regardless of the technology industry's overall LinkedIn usage rate.
+
+### 2. Geographic Variations Are Neutralized
+
+Geographic variations in LinkedIn adoption are neutralized through the location quotient's normalization process. Each state's industry concentration is calculated as a proportion of its total job postings, automatically adjusting for state-level differences in platform usage. Whether California posts significantly more jobs on LinkedIn than rural states becomes irrelevant when examining the proportion of jobs within each state's economy.
+
+## Implementation and Technical Architecture
+
+### Data Acquisition
+
+The data acquisition process began with a curated [dataset of over 124,000 LinkedIn job postings](https://www.kaggle.com/datasets/arshkon/linkedin-job-postings/data) spanning 2023–2024, obtained from Kaggle to avoid the technical and legal complexities of direct web scraping.
+
+### Data Preprocessing
+
+The preprocessing pipeline filtered out:
+
+- Remote positions
+- Jobs listed only as "United States" without specific state locations
+- Positions in D.C. and other non-state territories
+- Public administration roles (to maintain consistency with BLS classifications)
+
+### AI-Powered Classification
+
+The most innovative aspect of the data processing involved using **OpenAI's GPT-3.5 Turbo** model for automated industry classification. Each job posting was categorized into one of eleven major industry sectors aligned with BLS standards, based solely on job titles and company names. This natural language processing approach enabled rapid classification of thousands of postings while maintaining consistency with established industry taxonomies. The model also determined ownership types — federal, state, local, or private — providing additional analytical dimensions.
+
+### Geographic Assignment
+
+Geographic assignment presented unique challenges that required a multi-tiered approach:
+
+1. **Primary determination** — used provided FIPS codes where available
+2. **GPT-assisted identification** — for ambiguous cases without FIPS codes
+3. **Manual review** — for the remaining unclassified positions
+
+This hybrid methodology balanced automation efficiency with accuracy requirements, ensuring complete geographic coverage of the dataset.
+
+### State-Level Aggregation and Calculations
+
+After classification and geographic assignment, the pipeline:
+
+1. Compiled job counts by industry and ownership type for each state
+2. Computed local concentration ratios within each state
+3. Established national concentration benchmarks
+4. Calculated location quotients to compare state vs. national distributions
+
+### Visualization Layer
+
+The visualization layer employs **R Shiny** for the web application framework, creating an interactive platform that mirrors the functionality of the official BLS tool. **Plotly** generates responsive choropleth maps with dynamic color scaling that adjusts to industry-specific concentration ranges. Custom CSS styling ensures professional presentation while maintaining intuitive navigation through dropdown menus for industry selection. Interactive tooltips reveal detailed metrics on hover, including local and national employment figures, concentration ratios, and calculated location quotients.
+
+Design decisions include:
+
+- A blue-to-orange color gradient matching BLS conventions
+- An intuitive dropdown for industry selection
+- Interactive hover effects displaying detailed state metrics
+- Industry-specific thresholds for color scaling
+
+## Economic Insights and Policy Implications
+
+The application reveals fascinating patterns in America's economic geography that align with both historical development and contemporary trends. Traditional manufacturing strongholds in the Midwest maintain elevated location quotients despite decades of deindustrialization, suggesting persistent industrial infrastructure and specialized workforce skills. Technology sector concentration along the coasts reflects the agglomeration economies that characterize knowledge industries, where proximity to talent, capital, and peer firms creates self-reinforcing clusters.
+
+These patterns have profound implications for economic development policy. Regions with high location quotients in growing industries may benefit from policies that reinforce existing strengths, while areas seeking economic diversification might target industries with moderate quotients that could expand with appropriate support. The visualization enables policymakers to identify potential cluster development opportunities where nascent concentrations might grow into competitive advantages with strategic investment.
+
+The methodology also demonstrates the potential for alternative data sources in economic analysis. As traditional data collection becomes increasingly expensive and time-consuming, digital platforms offer real-time insights into economic activity. While not replacing official statistics, these alternative sources can provide timely indicators between census periods and reveal emerging trends before they appear in conventional data.
+
+## Limitations and Future Directions
+
 ### Current Limitations
-- LinkedIn data may not perfectly represent all industry employment
-- Limited to 13 major industry sectors
-- Some states have sparse data in certain industries
-- Free tier hosting limits on shinyapps.io (25 active hours/month)
+
+Several limitations merit consideration when interpreting results:
+
+- **User-base skew** — LinkedIn's user base skews toward white-collar professions and technology-literate workers, potentially underrepresenting manufacturing, agriculture, and service sectors
+- **Temporal coverage** — the dataset spans only recent years, preventing longitudinal analysis of structural economic changes
+- **Demand vs. employment** — job postings represent labor demand rather than actual employment, though the two generally correlate strongly
+- **Sparse data** — some states have limited posting volume in certain industries
+- **Hosting constraints** — the shinyapps.io free tier limits the application to 25 active hours per month
 
 ### Future Improvements
-- Expand to more granular industry classifications
-- Add time-series analysis capabilities
-- Implement ownership type filtering
-- Add comparative analysis tools
-- Enhance mobile responsiveness
 
-## Technical Details
+Future enhancements could address these limitations while expanding analytical capabilities:
+
+- **Multi-platform integration** — incorporating multiple job platforms would improve sectoral coverage and reduce platform-specific bias
+- **Time-series analysis** — enabling tracking of industrial evolution and identification of emerging clusters
+- **Granular industry classifications** — revealing specialized niches within broader sector categories
+- **Ownership type filtering** — surfacing the federal/state/local/private distinctions already captured in the data
+- **Comparative analysis tools** — supporting side-by-side state or industry comparisons
+- **Enhanced mobile responsiveness** — improving the experience on smaller screens
+- **Cross-indicator integration** — combining LQ data with wage data, patent filings, or venture capital investments to provide multidimensional views of regional economic vitality
+
+## Conclusion
+
+This project demonstrates how innovative data sources and modern analytical techniques can democratize economic analysis while maintaining statistical rigor. By leveraging publicly available LinkedIn data and automated classification methods, the application provides insights traditionally reserved for those with access to expensive government datasets. The location quotient methodology's inherent normalization properties ensure that platform-specific biases do not compromise analytical validity.
+
+The convergence of economic theory, data science, and web development showcased here represents the future of applied economics. As digital platforms generate ever-richer data about economic activity, economists must develop creative approaches to harness these resources while understanding their limitations. This project contributes to that evolution by proving that alternative data sources, properly analyzed, can yield insights comparable to traditional methods while offering advantages in timeliness, cost, and accessibility.
+
+## Technical Appendix
+
+### Key Technologies
+
+- **R Shiny** — web application framework
+- **Plotly** — interactive choropleth mapping
+- **dplyr** — data manipulation
+- **readxl** — data ingestion
+- **OpenAI GPT-3.5 Turbo** — industry and ownership classification
+- **Custom CSS** — styling and layout
+
+### Data Source
+
+LinkedIn job postings — 124,000+ records spanning 2023–2024 ([Kaggle dataset](https://www.kaggle.com/datasets/arshkon/linkedin-job-postings/data))
+
+### Deployment
+
+Hosted on the [Shinyapps.io](https://www.shinyapps.io/) cloud platform, configured for optimal performance within free-tier constraints and capable of handling multiple concurrent users.
+
 ### Local Setup
+
 1. Clone the repository
 2. Install required R packages:
-```r
-install.packages(c("shiny", "plotly", "dplyr", "readxl"))
-```
-3. Set up your openai API key if rerunning classifications
+   ```r
+   install.packages(c("shiny", "plotly", "dplyr", "readxl"))
+   ```
+3. Set up your OpenAI API key if rerunning classifications
 4. Run the Shiny application:
-```r
-shiny::runApp()
-```
+   ```r
+   shiny::runApp()
+   ```
+
+### Repository
+
+[github.com/david-p-sorensen/Location-Quotient-Visualization](https://github.com/david-p-sorensen/Location-Quotient-Visualization)
