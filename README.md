@@ -1,7 +1,6 @@
-# 🔗 [**Click here to view the interactive visualization**](https://david-p-sorensen.shinyapps.io/location-quotient-visualization/)
+# 🔗 [**Click here to view the interactive visualization**](https://david-p-sorensen.shinyapps.io/location-quotient-visualization/) 🔗
 
-## Reimagining Regional Economic Analysis:  
-A Location Quotient Visualization With Alternative Data Sources
+### Reimagining Regional Economic Analysis: A Location Quotient Visualization With Alternative Data Sources
 
 
 
