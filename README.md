@@ -2,7 +2,7 @@
 
 ### Reimagining Regional Economic Analysis: A Location Quotient Visualization With Alternative Data Sources
 
-
+___
 
 ### Introduction
 
